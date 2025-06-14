@@ -49,11 +49,11 @@ app.post("/check-links", async (req, res) => {
           return { url: link, status: r.status, message: "OK" };
         } catch (err) {
           let message = "Unknown error";
-          if (err.code === "ECONNABORTED") message = "⏱️ Timeout";
-          else if (err.code === "ENOTFOUND") message = "🌐 DNS failed";
-          else if (err.response?.status === 403) message = "🔒 Blocked by site (403)";
-          else if (err.response?.status === 429) message = "🚫 Too many requests (429)";
-          else if (err.code) message = `❌ ${err.code}`;
+          if (err.code === "ECONNABORTED") message = "Timeout";
+          else if (err.code === "ENOTFOUND") message = "DNS failed";
+          else if (err.response?.status === 403) message = "Blocked by site (403)";
+          else if (err.response?.status === 429) message = "Too many requests (429)";
+          else if (err.code) message = `${err.code}`;
           else if (err.message) message = err.message;
 
           return {
@@ -67,9 +67,17 @@ app.post("/check-links", async (req, res) => {
 
     return res.json({ links: results });
   } catch (err) {
-    console.error("🔥 Server error:", err.message);
-    return res.status(500).json({ error: "Failed to fetch or process the main URL" });
-  }
+  let message = "Failed to fetch or process the main URL";
+  if (err.code === "ECONNABORTED") message = "Timeout while loading main URL";
+  else if (err.code === "ENOTFOUND") message = "Main domain not found (DNS failure)";
+  else if (err.response?.status === 403) message = "Main URL blocked (403)";
+  else if (err.response?.status === 429) message = "Too many requests to main URL (429)";
+  else if (err.code) message = `${err.code}`;
+  else if (err.message) message = err.message;
+
+  console.error("Main URL fetch error:", message);
+  return res.status(500).json({ error: message });
+}
 });
 
 process.on("unhandledRejection", (reason) => {
