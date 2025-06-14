@@ -18,9 +18,9 @@ Paste any public website URL and instantly scan for all `<a>` tags — we'll sho
 
 ## 🚀 Try Sample URLs
 
-https://vercel.com
-https://wikipedia.org
-https://w3schools.com
+https://vercel.com \t
+https://wikipedia.org \t
+https://w3schools.com \t
 
 ---
 
