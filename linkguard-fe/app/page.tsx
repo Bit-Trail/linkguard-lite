@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { SearchCheck, ShieldCheck } from "lucide-react";
+import { SearchCheck, ShieldCheck, AlertTriangle } from "lucide-react";
 import { TopNav } from "@/components/TopNav";
 
 type LinkResult = {
@@ -25,6 +25,12 @@ export default function HomePage() {
   const [results, setResults] = useState<LinkResult[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const ITEMS_PER_PAGE = 20;
+  const paginatedResults = results.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   const handleScan = async () => {
     if (!url) return;
@@ -44,25 +50,18 @@ export default function HomePage() {
 
       const data = await res.json();
 
-      if (!data.ok) {
-        setError(data.error || "Unknown error occurred.");
-        return;
+      if (!res.ok) {
+        throw new Error(data?.error || "Unknown error occurred.");
       }
 
       setResults(data.links || []);
-    } catch (err) {
-      console.error("Failed to fetch:", err);
-      setError("Network error or server not reachable.");
+    } catch (err: any) {
+      console.error("❌ Scan failed:", err);
+      setError(err.message || "Unknown error occurred.");
     } finally {
       setLoading(false);
     }
   };
-
-  const ITEMS_PER_PAGE = 20;
-  const paginatedResults = results.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
 
   return (
     <>
@@ -101,13 +100,11 @@ export default function HomePage() {
               <SearchCheck className="w-5 h-5 text-blue-600" />
               <h2 className="font-semibold">What does LinkGuard do?</h2>
             </div>
-
             <p className="mb-2">
               LinkGuard scans any webpage and finds all the links — then checks
               which are working or broken. It’s helpful for developers, SEO
               folks, and anyone managing a website.
             </p>
-
             <div className="flex items-center gap-2 mb-2">
               <ShieldCheck className="w-4 h-4 text-green-600" />
               <p>
@@ -115,7 +112,6 @@ export default function HomePage() {
                 <code>https://</code>
               </p>
             </div>
-
             <div className="mb-2">
               <p>Try one of these:</p>
               <ul className="list-disc ml-6 mt-2 text-blue-600">
@@ -127,8 +123,11 @@ export default function HomePage() {
           </div>
 
           {error && (
-            <div className="bg-red-100 border border-red-300 text-red-700 p-4 rounded-md animate-in fade-in duration-300">
-              <strong>Error:</strong> {error}
+            <div className="text-red-600 text-sm bg-red-100 border border-red-300 rounded-md p-3 flex gap-2 items-center">
+              <AlertTriangle className="w-4 h-4" />
+              <span>
+                <strong>Error:</strong> {error}
+              </span>
             </div>
           )}
 
@@ -141,18 +140,17 @@ export default function HomePage() {
                     <TableHead className="text-right pr-6">Status</TableHead>
                   </TableRow>
                 </TableHeader>
-
                 <TableBody>
                   {paginatedResults.map((link, i) => {
                     const isOk = link.status === 200;
                     return (
                       <TableRow
                         key={i}
-                        className={`${
+                        className={
                           isOk
                             ? "bg-green-50 dark:bg-green-900/10"
                             : "bg-red-50 dark:bg-red-900/10"
-                        }`}
+                        }
                       >
                         <TableCell className="break-words max-w-[600px]">
                           <a
