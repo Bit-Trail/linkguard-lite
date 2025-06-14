@@ -55,9 +55,12 @@ export default function HomePage() {
       }
 
       setResults(data.links || []);
-    } catch (err: any) {
-      console.error("❌ Scan failed:", err);
-      setError(err.message || "Unknown error occurred.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || "Unknown error occurred.");
+      } else {
+        setError("An unknown error occurred.");
+      }
     } finally {
       setLoading(false);
     }
