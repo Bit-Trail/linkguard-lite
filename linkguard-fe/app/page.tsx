@@ -23,16 +23,14 @@ export default function HomePage() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<LinkResult[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const handleScan = async () => {
     if (!url) return;
-
     setLoading(true);
     setResults([]);
-    setErrorMsg(null);
-    setCurrentPage(1);
+    setError(null);
 
     try {
       const res = await fetch(
@@ -44,22 +42,17 @@ export default function HomePage() {
         }
       );
 
-      if (!res.ok) {
-        const errJson = await res.json().catch(() => ({}));
-        const msg =
-          errJson?.error ||
-          `${res.status} ${res.statusText}` ||
-          "Unknown server error";
+      const data = await res.json();
 
-        setErrorMsg(msg);
+      if (!data.ok) {
+        setError(data.error || "Unknown error occurred.");
         return;
       }
 
-      const data = await res.json();
       setResults(data.links || []);
-    } catch (err: any) {
-      setErrorMsg(err.message || "Network error");
-      console.error(err);
+    } catch (err) {
+      console.error("Failed to fetch:", err);
+      setError("Network error or server not reachable.");
     } finally {
       setLoading(false);
     }
@@ -103,12 +96,6 @@ export default function HomePage() {
             </Button>
           </form>
 
-          {errorMsg && (
-            <div className="border border-red-400 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 px-4 py-3 rounded">
-              🚡 {errorMsg}
-            </div>
-          )}
-
           <div className="bg-muted p-5 rounded-md text-sm text-gray-700 dark:text-gray-200 animate-in fade-in duration-500 border">
             <div className="flex items-center gap-2 mb-2">
               <SearchCheck className="w-5 h-5 text-blue-600" />
@@ -138,6 +125,12 @@ export default function HomePage() {
               </ul>
             </div>
           </div>
+
+          {error && (
+            <div className="bg-red-100 border border-red-300 text-red-700 p-4 rounded-md animate-in fade-in duration-300">
+              <strong>Error:</strong> {error}
+            </div>
+          )}
 
           {results.length > 0 && (
             <div className="mt-6 border rounded-md overflow-x-auto space-y-4">
