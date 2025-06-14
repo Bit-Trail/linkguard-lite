@@ -62,6 +62,7 @@ npm run dev
 ## Clips
 
 ![alt text](image.png)
+![alt text](<Screenshot from 2025-06-14 12-49-35.png>)
 
 ---
 
