@@ -11,11 +11,12 @@ app.post("/check-links", async (req, res) => {
   const { url } = req.body;
 
   try {
-    const response = await axios.get(link, {
-  headers: {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-  },
-});
+    const response = await axios.get(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      },
+    });
+
     const $ = cheerio.load(response.data);
     const links = [];
 
