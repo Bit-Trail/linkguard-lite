@@ -71,8 +71,8 @@ export default function HomePage() {
     <>
       <TopNav />
 
-      <main className="min-h-screen bg-background px-4 py-10 flex items-center justify-center">
-        <div className="max-w-3xl w-full space-y-6">
+      <main className="min-h-screen bg-background px-4 py-10 flex flex-col lg:flex-row items-start justify-center gap-8">
+        <div className="w-full max-w-3xl space-y-6">
           <div className="text-center">
             <h1 className="text-3xl font-bold mb-2">
               <span className="text-blue-600">LinkGuard Lite</span>
@@ -219,6 +219,20 @@ export default function HomePage() {
             </a>
           </footer>
         </div>
+        <aside className="hidden lg:block w-full max-w-sm bg-blue-50 dark:bg-blue-900/10 p-5 rounded-lg shadow border border-blue-200 dark:border-blue-800 text-sm text-blue-900 dark:text-blue-200">
+          <h2 className="text-base font-bold mb-3 text-blue-700 dark:text-blue-100">
+            💡 What is LinkGuard Lite?
+          </h2>
+          <ul className="list-disc pl-5 space-y-2">
+            <li>🔗 Scans any public webpage for links</li>
+            <li>🛠️ Checks which links work and which are broken</li>
+            <li>⚡ Fast, reliable, and beginner-friendly</li>
+            <li>🧠 No signup, no complexity — just paste & scan</li>
+            <li>👨‍💻 Useful for developers, SEO experts, website managers</li>
+            <li>🌐 Works best with HTTPS links (public sites)</li>
+            <li>📊 Shows status codes: 200, 404, 403, etc.</li>
+          </ul>
+        </aside>
       </main>
     </>
   );
