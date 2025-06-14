@@ -56,6 +56,7 @@ export default function HomePage() {
 
       setResults(data.links || []);
     } catch (err: unknown) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (err instanceof Error) {
         setError(err.message || "Unknown error occurred.");
       } else {
