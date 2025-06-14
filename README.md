@@ -59,6 +59,12 @@ npm run dev
 
 ---
 
+## Clips
+
+![alt text](image.png)
+
+---
+
 ## 🙌 Author
 
 Made with 💙 by Akshay Srivathsa
